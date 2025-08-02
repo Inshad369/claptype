@@ -1,0 +1,8 @@
+__pycache__
+.venv
+.history
+src/claps/*
+src/clap_detector.egg-info/*
+src/clapDetector/clapDetection.log
+.pypirc
+uploadToPypi.bat
