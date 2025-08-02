@@ -1,0 +1,5 @@
+2025-08-02 07:02:46,936 - clapDetector.clapDetector - INFO - Audio has been initialized.
+2025-08-02 07:02:48,373 - clapDetector.clapDetector - DEBUG - Clap detected! 6 peaks found
+2025-08-02 07:02:48,610 - clapDetector.clapDetector - DEBUG - Clap detected! 2 peaks found
+2025-08-02 07:02:54,626 - clapDetector.clapDetector - DEBUG - Clap detected! 2 peaks found
+2025-08-02 07:03:10,471 - clapDetector.clapDetector - INFO - audio stream stopped

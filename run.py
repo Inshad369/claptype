@@ -1,50 +1,64 @@
+import sounddevice as sd
+import numpy as np
 import time
-from clapDetector import ClapDetector
+import keyboard
 
-# Detection settings
-thresholdBias = 6000
-lowcut = 200
-highcut = 3200
-minClapInterval = 0.15    # Minimum time between claps
-sequenceTimeout = 1.0     # Time window to group claps
+# Configuration
+SAMPLE_RATE = 44100
+DURATION = 0.3
+CLAP_THRESHOLD = 0.5
+CLAP_GROUP_WINDOW = 2  # Time window to group claps (seconds)
 
-# Initialize
-clapDetector = ClapDetector(inputDevice=-1, logLevel=0)
-clapDetector.initAudio()
+def record_audio():
+    audio = sd.rec(int(SAMPLE_RATE * DURATION), samplerate=SAMPLE_RATE, channels=1)
+    sd.wait()
+    return np.squeeze(audio)
 
-try:
-    lastClapTime = 0
-    clapTimes = []
+def detect_clap(audio):
+    volume = np.max(np.abs(audio))
+    return volume > CLAP_THRESHOLD
 
-    while True:
-        audioData = clapDetector.getAudio()
-        result = clapDetector.run(thresholdBias=thresholdBias, lowcut=lowcut, highcut=highcut, audioData=audioData)
-        now = time.time()
+def get_letter_from_claps(clap_count):
+    mapping = {
+        1: 'A',
+        2: 'B',
+        3: 'C'
+    }
+    return mapping.get(clap_count, '?')
 
-        if result:
-            if now - lastClapTime > minClapInterval:
-                clapTimes.append(now)
-                lastClapTime = now
+def main():
+    print("👂 Listening for claps... (Press Ctrl+C to stop)")
+    clap_times = []
+    group_start_time = None
 
-        # Remove old claps
-        clapTimes = [t for t in clapTimes if now - t <= sequenceTimeout]
+    try:
+        while True:
+            audio = record_audio()
+            if detect_clap(audio):
+                now = time.time()
+                print("👏 Clap detected!")
+                if group_start_time is None:
+                    group_start_time = now
+                    clap_times = [now]
+                else:
+                    clap_times.append(now)
 
-        # If enough time passed since last clap, evaluate
-        if clapTimes and (now - clapTimes[-1] > sequenceTimeout):
-            count = len(clapTimes)
-            if count == 1:
-                print("One")
-            elif count == 2:
-                print("Two")
-            else:
-                print("Three")
-            clapTimes.clear()
+            # Check if grouping time is over
+            if group_start_time and (time.time() - group_start_time > CLAP_GROUP_WINDOW):
+                clap_count = len(clap_times)
+                letter = get_letter_from_claps(clap_count)
+                if letter != '?':
+                    keyboard.write(letter)
+                    print(f"✅ Typed: {letter}")
+                else:
+                    print(f"❌ Unknown pattern: {clap_count} claps")
 
-        time.sleep(1 / 60)
+                # Reset for next group
+                group_start_time = None
+                clap_times = []
 
-except KeyboardInterrupt:
-    pass
-except Exception:
-    pass
-finally:
-    clapDetector.stop()
+    except KeyboardInterrupt:
+        print("\n🛑 Exiting. Bye!")
+
+if __name__ == "__main__":
+    main()
