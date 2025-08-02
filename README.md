@@ -25,7 +25,7 @@ This
 ### Technologies/Components Used
 For Software:
 - [Python]
-- [numpy,pysound,pandas]
+- [numpy,pysound,keyboard]
 
 For Hardware:
 - [Microphone]
@@ -37,6 +37,10 @@ uv pip install -r pyproject.toml
 py run.py
 
 # Screenshots (Add at least 3)
+<img width="1456" height="484" alt="image" src="https://github.com/user-attachments/assets/81678799-8ff5-43db-9134-075e0d119f3a" />
+<img width="1900" height="1029" alt="image" src="https://github.com/user-attachments/assets/f88d0de7-a748-4405-ae4d-585f9a7a1d02" />
+<img width="784" height="365" alt="image" src="https://github.com/user-attachments/assets/636737af-d673-4d19-9dd1-8ccdca60c73f" />
+
 ---
 Made with ❤️ at TinkerHub Useless Projects 
 
